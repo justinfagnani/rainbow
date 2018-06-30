@@ -1,9 +1,12 @@
+import {extend} from '../rainbow.js';
+import './generic.js';
+
 /**
  * Python patterns
  *
  * @author Craig Campbell
  */
-Rainbow.extend('python', [
+extend('python', [
     /**
      * don't highlight self as a keyword
      */

@@ -1,10 +1,12 @@
+import {extend} from '../rainbow.js';
+
 /**
  * SQL Language
  *
  * @author Jan Navratil
  * @author Craig Campbell
  */
-Rainbow.extend('sql', [
+extend('sql', [
     {
         matches: {
             2: {

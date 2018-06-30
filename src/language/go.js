@@ -1,10 +1,13 @@
+import {extend} from '../rainbow.js';
+import './generic.js';
+
 /**
  * GO Language
  *
  * @author Javier Aguirre
  * @author Craig Campbell
  */
-Rainbow.extend('go', [
+extend('go', [
     {
         matches: {
             1: [

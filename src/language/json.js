@@ -1,10 +1,12 @@
+import {extend} from '../rainbow.js';
+
 /**
  * JSON patterns
  *
  * @author Nijiko Yonskai
  * @author Craig Campbell
  */
-Rainbow.extend('json', [
+extend('json', [
     {
         matches: {
             0: {

@@ -1,9 +1,11 @@
+import {extend} from '../rainbow.js';
+
 /**
  * Smalltalk patterns
  *
  * @author Frank Shearar <frank@angband.za.org>
  */
-Rainbow.extend('smalltalk', [
+extend('smalltalk', [
     {
         name: 'keyword.pseudovariable',
         pattern: /self|thisContext/g

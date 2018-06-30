@@ -1,10 +1,13 @@
+import {extend} from '../rainbow.js';
+import './generic.js';
+
 /**
  * C patterns
  *
  * @author Daniel Holden
  * @author Craig Campbell
  */
-Rainbow.extend('c', [
+extend('c', [
     {
         name: 'meta.preprocessor',
         matches: {

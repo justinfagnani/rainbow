@@ -17,9 +17,7 @@
  *
  * @see rainbowco.de
  */
-import Prism from './prism';
-import { isNode as utilIsNode, isWorker as utilIsWorker, createWorker, getLanguageForBlock } from './util';
-import rainbowWorker from './worker';
+import { getLanguageForBlock } from './util';
 
 /**
  * An array of the language patterns specified for each language
@@ -43,13 +41,6 @@ const inheritenceMap = {};
 const aliases = {};
 
 /**
- * Representation of the actual rainbow object
- *
- * @type {Object}
- */
-let Rainbow = {};
-
-/**
  * Callback to fire after each block is highlighted
  *
  * @type {null|Function}
@@ -62,13 +53,12 @@ let onHighlightCallback;
  */
 let id = 0;
 
-const isNode = utilIsNode();
-const isWorker = utilIsWorker();
 
-let cachedWorker = null;
+let cachedWorker = undefined;
 function _getWorker() {
-    if (isNode || cachedWorker === null) {
-        cachedWorker = createWorker(rainbowWorker, Prism);
+    if (cachedWorker === undefined) {
+        const url = new URL('worker.js', import.meta.url);
+        cachedWorker = new Worker(url.toString(), {type: 'module'});
     }
 
     return cachedWorker;
@@ -79,33 +69,30 @@ function _getWorker() {
  * post message requests to a web worker.
  *
  * @param {object} message      data to send to web worker
- * @param {Function} callback   callback function for worker to reply to
  * @return {void}
  */
-function _messageWorker(message, callback) {
+const _messageWorker = (message) => new Promise((resolve) => {
     const worker = _getWorker();
 
-    function _listen(e) {
+    const _listen = (e) => {
         if (e.data.id === message.id) {
-            callback(e.data);
             worker.removeEventListener('message', _listen);
+            resolve(e.data);
         }
     }
 
     worker.addEventListener('message', _listen);
     worker.postMessage(message);
-}
+});
 
 /**
  * Browser Only - Handles response from web worker, updates DOM with
  * resulting code, and fires callback
  *
  * @param {Element} element
- * @param {object} waitingOn
- * @param {Function} callback
- * @return {void}
+ * @return {Promise}
  */
-function _generateHandler(element, waitingOn, callback) {
+function _generateHandler(element) {
     return function _handleResponseFromWorker(data) {
         element.innerHTML = data.result;
         element.classList.remove('loading');
@@ -126,10 +113,6 @@ function _generateHandler(element, waitingOn, callback) {
 
         if (onHighlightCallback) {
             onHighlightCallback(element, data.lang);
-        }
-
-        if (--waitingOn.c === 0) {
-            callback();
         }
     };
 }
@@ -171,7 +154,7 @@ function _getWorkerData(code, lang) {
         code,
         lang,
         options: _getPrismOptions(options),
-        isNode
+        isNode: undefined,
     };
 
     return workerData;
@@ -182,11 +165,11 @@ function _getWorkerData(code, lang) {
  * in
  *
  * @param {Array} codeBlocks
- * @param {Function} callback
  * @return {void}
  */
-function _highlightCodeBlocks(codeBlocks, callback) {
-    const waitingOn = { c: 0 };
+async function _highlightCodeBlocks(codeBlocks) {
+    const promises = [];
+
     for (const block of codeBlocks) {
         const language = getLanguageForBlock(block);
         if (block.classList.contains('rainbow') || !language) {
@@ -208,13 +191,11 @@ function _highlightCodeBlocks(codeBlocks, callback) {
         const globalClass = block.getAttribute('data-global-class');
         const delay = parseInt(block.getAttribute('data-delay'), 10);
 
-        ++waitingOn.c;
-        _messageWorker(_getWorkerData(block.innerHTML, { language, globalClass, delay }), _generateHandler(block, waitingOn, callback));
+        promises.push(
+            _messageWorker(_getWorkerData(block.innerHTML, { language, globalClass, delay }))
+            .then(_generateHandler(block)));
     }
-
-    if (waitingOn.c === 0) {
-        callback();
-    }
+    await Promise.all(promises);
 }
 
 function _addPreloader(preBlock) {
@@ -230,12 +211,9 @@ function _addPreloader(preBlock) {
  * Browser Only - Start highlighting all the code blocks
  *
  * @param {Element} node       HTMLElement to search within
- * @param {Function} callback
- * @return {void}
+ * @return {Promise}
  */
-function _highlight(node, callback) {
-    callback = callback || function() {};
-
+async function _highlight(node) {
     // The first argument can be an Event or a DOM Element.
     //
     // I was originally checking instanceof Event but that made it break
@@ -294,7 +272,7 @@ function _highlight(node, callback) {
         finalCodeBlocks.push(codeBlock);
     }
 
-    _highlightCodeBlocks(finalCodeBlocks.concat(finalPreBlocks), callback);
+    return _highlightCodeBlocks(finalCodeBlocks.concat(finalPreBlocks));
 }
 
 /**
@@ -304,7 +282,7 @@ function _highlight(node, callback) {
  * @param {Function} callback
  * @return {void}
  */
-function onHighlight(callback) {
+export function onHighlight(callback) {
     onHighlightCallback = callback;
 }
 
@@ -316,14 +294,14 @@ function onHighlight(callback) {
  * @param {string|undefined} inherits  optional language that this language
  *                                     should inherit rules from
  */
-function extend(language, languagePatterns, inherits) {
+export function extend(language, languagePatterns, inherits) {
 
     // If we extend a language again we shouldn't need to specify the
     // inheritence for it. For example, if you are adding special highlighting
     // for a javascript function that is not in the base javascript rules, you
     // should be able to do
     //
-    // Rainbow.extend('javascript', [ … ]);
+    // extend('javascript', [ … ]);
     //
     // Without specifying a language it should inherit (generic in this case)
     if (!inheritenceMap[language]) {
@@ -333,7 +311,7 @@ function extend(language, languagePatterns, inherits) {
     patterns[language] = languagePatterns.concat(patterns[language] || []);
 }
 
-function remove(language) {
+export function remove(language) {
     delete inheritenceMap[language];
     delete patterns[language];
 }
@@ -343,38 +321,24 @@ function remove(language) {
  *
  * @return {void}
  */
-function color(...args) {
-
+export async function color(...args) {
     // If you want to straight up highlight a string you can pass the
-    // string of code, the language, and a callback function.
-    //
+    // string of code, and the language.
+
     // Example:
     //
-    // Rainbow.color(code, language, function(highlightedCode, language) {
+    // Rainbow.color(code, language), function(highlightedCode, language) {
     //     // this code block is now highlighted
     // });
     if (typeof args[0] === 'string') {
-        const workerData = _getWorkerData(args[0], args[1]);
-        _messageWorker(workerData, (function(cb) {
-            return function(data) {
-                if (cb) {
-                    cb(data.result, data.lang);
-                }
-            };
-        }(args[2])));
-        return;
+        const [code, language] = args;
+        const workerData = _getWorkerData(code, language);
+        const {result, lang} = await _messageWorker(workerData);
+        return {result, lang};
     }
 
-    // If you pass a callback function then we rerun the color function
-    // on all the code and call the callback function on complete.
-    //
-    // Example:
-    //
-    // Rainbow.color(function() {
-    //     console.log('All matching tags on the page are now highlighted');
-    // });
-    if (typeof args[0] === 'function') {
-        _highlight(0, args[0]);
+    if (args.length === 0) {
+        const result = await _highlight();
         return;
     }
 
@@ -393,7 +357,7 @@ function color(...args) {
     // });
     //
     // If you don't pass an element it will default to `document`
-    _highlight(args[0], args[1]);
+    return _highlight(args[0]);
 }
 
 /**
@@ -406,41 +370,13 @@ function color(...args) {
  * @param {string} originalLanguage
  * @return {void}
  */
-function addAlias(alias, originalLanguage) {
+export function addAlias(alias, originalLanguage) {
     aliases[alias] = originalLanguage;
 }
 
-/**
- * public methods
- */
-Rainbow = {
-    extend,
-    remove,
-    onHighlight,
-    addAlias,
-    color
-};
-
-if (isNode) {
-    Rainbow.colorSync = function(code, lang) {
-        const workerData = _getWorkerData(code, lang);
-        const prism = new Prism(workerData.options);
-        return prism.refract(workerData.code, workerData.lang);
-    };
-}
-
 // In the browser hook it up to color on page load
-if (!isNode && !isWorker) {
-    document.addEventListener('DOMContentLoaded', (event) => {
-        if (!Rainbow.defer) {
-            Rainbow.color(event);
-        }
-    }, false);
-}
-
-// From a node worker, handle the postMessage requests to it
-if (isWorker) {
-    self.onmessage = rainbowWorker;
-}
-
-export default Rainbow;
+document.addEventListener('DOMContentLoaded', (event) => {
+    // if (!defer) {
+        color();
+    // }
+}, false);

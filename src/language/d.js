@@ -1,10 +1,12 @@
+import {extend} from '../rainbow.js';
+
 /**
 * D patterns
 *
 * @author Matthew Brennan Jones
 * @version 1.0.1
 */
-Rainbow.extend('d', [
+extend('d', [
     {
         name: 'constant',
         pattern: /\b(false|null|true)\b/gm

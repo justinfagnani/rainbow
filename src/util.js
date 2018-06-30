@@ -1,13 +1,4 @@
 
-export function isNode() {
-    /* globals module */
-    return typeof module !== 'undefined' && typeof module.exports === 'object';
-}
-
-export function isWorker() {
-    return typeof document === 'undefined' && typeof self !== 'undefined';
-}
-
 /**
  * Browser Only - Gets the language for this block of code
  *

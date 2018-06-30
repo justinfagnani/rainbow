@@ -1,9 +1,11 @@
+import {addAlias, extend} from '../rainbow.js';
+
 /**
  * CSS patterns
  *
  * @author Craig Campbell
  */
-Rainbow.extend('css', [
+extend('css', [
     {
         name: 'comment',
         pattern: /\/\*[\s\S]*?\*\//gm
@@ -70,4 +72,4 @@ Rainbow.extend('css', [
     }
 ]);
 
-Rainbow.addAlias('scss', 'css');
+addAlias('scss', 'css');

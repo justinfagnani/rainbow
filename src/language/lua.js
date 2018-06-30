@@ -1,9 +1,11 @@
+import {extend} from '../rainbow.js';
+
 /**
  * Lua patterns
  *
  * @author Javier Aguirre
  */
-Rainbow.extend('lua', [
+extend('lua', [
     {
         matches: {
             1: {

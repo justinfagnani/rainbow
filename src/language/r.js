@@ -1,9 +1,12 @@
+import {extend} from '../rainbow.js';
+import './generic.js';
+
 /**
  * R language patterns
  *
  * @author Simon Potter
  */
-Rainbow.extend('r', [
+extend('r', [
     /**
      * Note that a valid variable name is of the form:
      * [.a-zA-Z][0-9a-zA-Z._]*

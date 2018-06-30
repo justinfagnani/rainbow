@@ -1,10 +1,13 @@
+import {extend} from '../rainbow.js';
+import './generic.js';
+
 /**
  * Haskell patterns
  *
  * @author Bruno Dias
  */
 //TODO: {-# ... #-} stuff...
-Rainbow.extend('haskell', [
+extend('haskell', [
 	///- Comments
 	{
 		name: 'comment',

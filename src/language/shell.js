@@ -1,10 +1,12 @@
+import {extend} from '../rainbow.js';
+
 /**
  * Shell patterns
  *
  * @author Matthew King
  * @author Craig Campbell
  */
-Rainbow.extend('shell', [
+extend('shell', [
     /**
      * This handles the case where subshells contain quotes.
      * For example: `"$(resolve_link "$name" || true)"`.

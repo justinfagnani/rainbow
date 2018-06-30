@@ -1,9 +1,11 @@
-    /**
+import {extend} from '../rainbow.js';
+
+/**
  * Generic language patterns
  *
  * @author Craig Campbell
  */
-Rainbow.extend('generic', [
+extend('generic', [
     {
         matches: {
             1: [

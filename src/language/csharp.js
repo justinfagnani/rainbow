@@ -1,10 +1,12 @@
+import {extend} from '../rainbow.js';
+
 /**
 * C# patterns
 *
 * @author Dan Stewart
 * @version 1.0.1
 */
-Rainbow.extend('csharp', [
+extend('csharp', [
     {
         // @see http://msdn.microsoft.com/en-us/library/23954zh5.aspx
         name: 'constant',

@@ -1,9 +1,11 @@
+import {addAlias, extend} from '../rainbow.js';
+
 /**
  * HTML patterns
  *
  * @author Craig Campbell
  */
-Rainbow.extend('html', [
+extend('html', [
     {
         name: 'source.php.embedded',
         matches: {
@@ -132,4 +134,4 @@ Rainbow.extend('html', [
     }
 ]);
 
-Rainbow.addAlias('xml', 'html');
+addAlias('xml', 'html');

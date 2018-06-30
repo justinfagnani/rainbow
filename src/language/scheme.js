@@ -1,9 +1,11 @@
+import {extend} from '../rainbow.js';
+
 /**
  * Scheme patterns
  *
  * @author Alex Queiroz <alex@artisancoder.com>
  */
-Rainbow.extend('scheme', [
+extend('scheme', [
     {
         /* making peace with HTML */
         name: 'plain',

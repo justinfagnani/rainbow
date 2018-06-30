@@ -4,7 +4,7 @@
 * @author Leo Accend
 * @version 1.0.0
 */
-Rainbow.extend( "java", [
+extend( "java", [
   {
     name: "constant",
     pattern: /\b(false|null|true|[A-Z_]+)\b/g

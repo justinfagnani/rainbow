@@ -1,8 +1,8 @@
 {
-  "name": "rainbow-code",
-  "version": "2.1.4",
+  "name": "@justinfagnani/rainbow",
+  "version": "0.1.0-pre.1",
   "description": "Simple library for code syntax highlighting",
-  "main": "./src/rainbow-node.js",
+  "main": "./src/rainbow.js",
   "homepage": "http://rainbowco.de",
   "scripts": {
     "test": "gulp test"
@@ -52,8 +52,5 @@
     "sinon-chai": "2.8.0",
     "through": "2.3.8",
     "yargs": "4.7.1"
-  },
-  "dependencies": {
-    "webworker-threads": "0.7.13"
   }
 }

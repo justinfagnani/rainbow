@@ -1,9 +1,12 @@
+import {addAlias, extend} from '../rainbow.js';
+import './generic.js';
+
 /**
  * Coffeescript patterns
  *
  * @author Craig Campbell
  */
-Rainbow.extend('coffeescript', [
+extend('coffeescript', [
     {
         name: 'comment.block',
         pattern: /(\#{3})[\s\S]*\1/gm
@@ -123,4 +126,4 @@ Rainbow.extend('coffeescript', [
     }
 ], 'generic');
 
-Rainbow.addAlias('coffee', 'coffeescript');
+addAlias('coffee', 'coffeescript');

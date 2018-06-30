@@ -1,4 +1,5 @@
-/* global Rainbow */
+import * as Rainbow from '../src/rainbow.js';
+import {extend} from '../src/rainbow.js';
 
 /////////////////////////
 // Helpers and globals //
@@ -34,13 +35,13 @@ describe('Rainbow', () => {
     it('Basic things are defined', () => {
         expect(Rainbow).to.exist;
         expect(Rainbow.color).to.be.a('function');
-        expect(Rainbow.extend).to.be.a('function');
+        expect(extend).to.be.a('function');
         expect(Rainbow.onHighlight).to.be.a('function');
         expect(Rainbow.addAlias).to.be.a('function');
     });
 
     it('Should apply global class', (done) => {
-        Rainbow.extend('generic', [{
+        extend('generic', [{
             name: 'name',
             pattern: /Craig/gm
         }]);
@@ -52,7 +53,7 @@ describe('Rainbow', () => {
     });
 
     it('Should properly use patterns', (done) => {
-        Rainbow.extend('generic', genericPatterns);
+        extend('generic', genericPatterns);
 
         Rainbow.color('here is a test', 'generic', (result) => {
             expect(result).to.equal('here is a <span class="test">test</span>');
@@ -61,7 +62,7 @@ describe('Rainbow', () => {
     });
 
     it('Should properly extend generic patterns', (done) => {
-        Rainbow.extend('newLanguage', patternA, 'generic');
+        extend('newLanguage', patternA, 'generic');
 
         Rainbow.color('here is a test', 'newLanguage', (result) => {
             expect(result).to.equal('<span class="a">here</span> is a <span class="test">test</span>');
@@ -70,7 +71,7 @@ describe('Rainbow', () => {
     });
 
     it('Should properly extend other patterns that extend generic patterns', (done) => {
-        Rainbow.extend('newLanguage', patternB);
+        extend('newLanguage', patternB);
 
         Rainbow.color('here is a test', 'newLanguage', (result) => {
             expect(result).to.equal('<span class="a">here</span> <span class="b">is</span> a <span class="test">test</span>');
@@ -88,7 +89,7 @@ describe('Rainbow', () => {
     });
 
     it('Should properly remove language', (done) => {
-        Rainbow.extend('foo', genericPatterns);
+        extend('foo', genericPatterns);
 
         Rainbow.color('just a test', 'foo', (result) => {
             expect(result).to.equal('just a <span class="test">test</span>');
@@ -106,7 +107,7 @@ describe('Rainbow', () => {
     // global regex matches we should make sure this works too.
     it('Should work with non global regex matches', (done) => {
         Rainbow.remove('foo');
-        Rainbow.extend('foo', [
+        extend('foo', [
             {
                 name: 'number',
                 pattern: /\b\d+\b/
@@ -120,7 +121,7 @@ describe('Rainbow', () => {
     });
 
     it('Should support dollar signs in replacements', (done) => {
-        Rainbow.extend('dollarLanguage', patternDollar);
+        extend('dollarLanguage', patternDollar);
 
         Rainbow.color('here is a test with a \'$\' sign in it', 'dollarLanguage', (result) => {
             expect(result).to.equal('here is a test with a <span class="dollar">\'$\'</span> sign in it');

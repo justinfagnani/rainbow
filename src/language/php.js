@@ -1,9 +1,12 @@
+import {extend} from '../rainbow.js';
+import './generic.js';
+
 /**
  * PHP patterns
  *
  * @author Craig Campbell
  */
-Rainbow.extend('php', [
+extend('php', [
     {
         name: 'support',
         pattern: /\becho\b/ig

@@ -1,4 +1,50 @@
-# Rainbow
+# Rainbow-JS
+
+`raindow-js` is a light fork of Rainbow to make it compatible with standard JS
+modules and be directly loadable by modern browsers.
+
+### Browser Support
+
+Because it uses Worker modules (and doesn't bundle the worker _just yet_), it currently only works in Chrome with the `--enable-experimental-web-platform-features` flag.
+
+Go to chrome://flags/#enable-experimental-web-platform-features to set the flag.
+
+Once there's a worker bundle, `rainbow-js` will work in Chrome, Safari, Firefox and Edge uncompiled.
+
+### Usage
+
+Because languages now import the core `rainbow.js` file, you only need to import the language files you want to use:
+
+Example:
+
+```html
+<script type="module" src="/js/rainbow-js/src/language/javascript.js">
+```
+
+### Changes
+
+* Removed `Rainbow` global variable.
+* Added named exports for `extends`, `color`, etc.
+* Replaced callbacks with Promises and async/await.
+* Updated languages to use modules
+  * Imported `extends` and other APIs into languages
+  * Imported `rainbobw.js` into languages.
+  * Imported `languages/generic.js` into languages that extend it.
+* Updated demos to use `<script type="module">`
+* Updated worker to use modules
+  * Removed `createWorker` function
+  * Imported `utils.js` directly into `worker.js`
+  * Create Worker using `import.meta.url`
+* Removed most gulp tasks
+* Some updates to README
+
+### To Do
+* Add rollup build of `worker.js`, since worker modules are only supported in Chrome with the `--enable-experimental-web-platform-features` flag.
+* Replace `import.meta.url` since it's not supported in Edge?
+* Replace `defer` with a separate module to auto-highlight.
+* Get tests running
+
+----
 
 Rainbow is a code syntax highlighting library written in Javascript.
 
@@ -26,11 +72,11 @@ You can also build/download custom packages from there.
     * [Rendering code blocks](#rendering-code-blocks)
     * [Adding custom rules for specific languages](#adding-custom-rules-for-specific-languages)
   * [JavaScript API Documentation](#javascript-api-documentation)
-    * [Rainbow.color](#rainbowcolor)
+    * [color](#rainbowcolor)
       * [Preventing automatic highlighting on page load](#preventing-automatic-highlighting-on-page-load)
       * [Extra options for color](#extra-options-for-color)
         * [globalClass](#globalclass)
-    * [Rainbow.extend](#rainbowextend)
+    * [extend](#rainbowextend)
       * [Extending existing languages](#extending-existing-languages)
       * [How code is highlighted](#how-code-is-highlighted)
         * [Match by name](#match-by-name)
@@ -42,9 +88,9 @@ You can also build/download custom packages from there.
       * [Known limitations](#known-limitations)
         * [Regular expressions lookbehind assertions](#regular-expressions-lookbehind-assertions)
         * [Regular expression subgroup matches](#regular-expression-subgroup-matches)
-    * [Rainbow.addAlias](#rainbowaddalias)
-    * [Rainbow.onHighlight](#rainbowonhighlight)
-    * [Rainbow.remove](#rainbowremove)
+    * [addAlias](#rainbowaddalias)
+    * [onHighlight](#rainbowonhighlight)
+    * [remove](#rainbowremove)
   * [Building](#building)
     * [Getting a local environment set up](#getting-a-local-environment-set-up)
     * [Build commands](#build-commands)
@@ -76,31 +122,23 @@ You can also build/download custom packages from there.
     <link href="/assets/css/theme.css" rel="stylesheet" type="text/css">
     ```
 
-3. Include rainbow.js and whatever languages you want before the closing ``</body>``:
+3. Include whatever languages you want:
 
     ```html
-    <script src="/assets/js/rainbow.js"></script>
-    <script src="/assets/js/language/generic.js"></script>
-    <script src="/assets/js/language/python.js"></script>
+    <script type="module" src="/assets/js/language/python.js"></script>
     ```
 
-By default `dist/rainbow.min.js` comes with some popular languages bundled together with it.
-
-### Node.js
-
-Rainbow 2.0 introduced support for node.js. All of the existing API methods should work, but there is also a new `Rainbow.colorSync` method for synchronous highlighting.
-
-#### Install rainbow
+#### Install rainbow-js
 
 ```
-npm install --save rainbow-code
+npm install --save @justinfagnani/rainbow
 ```
 
 #### Highlight some code
 
 ```javascript
-var rainbow = require('rainbow-code');
-var highlighted = rainbow.colorSync('// So meta\nrainbow.colorSync(\'var helloWorld = true;\');', 'javascript');
+import {color} from 'rainbow-js';
+const highlighted = await rainbow.color('// So meta\nrainbow.colorSync(\'var helloWorld = true;\');', 'javascript');
 console.log(highlighted);
 ```
 
@@ -191,11 +229,11 @@ You can pass a single language or a list of languages.
 
 Rainbow has four public methods:
 
-- [Rainbow.color](#rainbowcolor)
-- [Rainbow.extend](#rainbowextend)
-- [Rainbow.addAlias](#rainbowaddalias)
-- [Rainbow.onHighlight](#rainbowonhighlight)
-- [Rainbow.remove](#rainbowremove)
+- [color](#rainbowcolor)
+- [extend](#rainbowextend)
+- [addAlias](#rainbowaddalias)
+- [onHighlight](#rainbowonhighlight)
+- [remove](#rainbowremove)
 
 ### Rainbow.color
 
@@ -206,7 +244,7 @@ For convenience, this method is called automatically to highlight all code block
 1. The first option is calling the color method on its own:
 
     ```javascript
-    Rainbow.color();
+    color();
     ```
 
     Each time this is called, Rainbow will look for matching `pre` blocks on the page that have not yet been highlighted and highlight them.
@@ -214,7 +252,7 @@ For convenience, this method is called automatically to highlight all code block
     You can optionally pass a callback function that will fire when all the blocks have been highlighted.
 
     ```javascript
-    Rainbow.color(function() {
+    color(function() {
         console.log('The new blocks are now highlighted!');
     });
     ```
@@ -226,28 +264,21 @@ For convenience, this method is called automatically to highlight all code block
     ```javascript
     var div = document.createElement('div');
     div.innerHTML = '<pre><code data-language="javascript">var foo = true;</code></pre>';
-    Rainbow.color(div, function() {
-        document.getElementById('something-else').appendChild(div;)
+    await color(div);
+    document.getElementById('something-else').appendChild(div);
     });
     ```
 
 3. The final option is passing in your code as a string to `Rainbow.color`.
 
     ```javascript
-    Rainbow.color('var foo = true;', 'javascript', function(highlightedCode) {
-        console.log(highlightedCode);
-    });
+    const highlightedCode = await color('var foo = true;', 'javascript');
+    console.log(highlightedCode);
     ```
 
 #### Preventing automatic highlighting on page load
 
-If you want to prevent code on the page from being highlighted when the page loads you can set the `defer` property to `true`.
-
-```javascript
-Rainbow.defer = true;
-```
-
-Note that you have to set this before `DOMContentLoaded` fires or else it will not do anything.
+TODO: A separate module way opt-in to automatic highlighting
 
 #### Extra options for color
 
@@ -263,23 +294,25 @@ To apply a global class you can add it in your markup:
 <pre><code data-language="javascript" data-global-class="animate">var hello = true;</code></pre>
 ```
 
-Or you can pass it into a `Rainbow.color` call like this:
+Or you can pass it into a `color` call like this:
 
 ```javascript
-Rainbow.color('var hello = true;', {
+import {extend} from 'rainbow-js';
+color('var hello = true;', {
     language: 'javascript',
     globalClass: 'animate'
 });
 ```
 
-### Rainbow.extend
+### extend
 
-Rainbow.extend is used to define language grammars which are used to highlight the code you pass in. It can be used to define new languages or to extend existing languages.
+extend is used to define language grammars which are used to highlight the code you pass in. It can be used to define new languages or to extend existing languages.
 
 A very simple language grammer looks something like this:
 
 ```javascript
-Rainbow.extend('example', [
+import {extend} from 'rainbow-js';
+extend('example', [
     {
         name: 'keyword',
         pattern: /function|return|continue|break/g
@@ -292,7 +325,8 @@ Any pattern used with extend will take precedence over an existing pattern that 
 For example if you were to call
 
 ```javascript
-Rainbow.extend('example', [
+import {extend} from 'rainbow-js';
+extend('example', [
     {
         name: 'keyword.magic',
         pattern: /function/g
@@ -309,7 +343,8 @@ By default languages are considered to be standalone, but if you specify an opti
 For example the python language grammars inherit from the generic ones:
 
 ```javascript
-Rainbow.extend('python', [
+import {extend} from 'rainbow-js';
+extend('python', [
     {
         name: 'constant.language',
         pattern: /True|False|None/g
@@ -320,7 +355,8 @@ Rainbow.extend('python', [
 If you wanted to remove the default boolean values you should be able to do something like this:
 
 ```javascript
-Rainbow.extend('python', [
+import {extend} from 'rainbow-js';
+extend('python', [
     {
         name: '',
         pattern: /true|false/g
@@ -339,7 +375,8 @@ The `name` value determines what classes will be added to a span that matches th
 The simplest way to define a grammar is to define a regular expression and a name to go along with that.
 
 ```javascript
-Rainbow.extend([
+import {extend} from 'rainbow-js';
+extend([
     {
         name: 'constant.boolean',
         pattern: /true|false/g
@@ -352,7 +389,8 @@ Rainbow.extend([
 This allows you to take a more complicated regular expression and map certain parts of it to specific scopes.
 
 ```javascript
-Rainbow.extend([
+import {extend} from 'rainbow-js';
+extend([
     {
         matches: {
             1: 'constant.boolean.true',
@@ -368,7 +406,8 @@ Rainbow.extend([
 For more complicated matches you may want to process code within another match group.
 
 ```javascript
-Rainbow.extend([
+import {extend} from 'rainbow-js';
+extend([
     {
         matches: [
             {
@@ -390,7 +429,8 @@ Rainbow.extend([
 Sometimes a language supports other languages being embedded inside of it such as JavaScript inside HTML. Rainbow supports that out of the box. Here is an example of how you would highlight PHP tags inside of HTML code.
 
 ```javascript
-Rainbow.extend('html', [
+import {extend} from 'rainbow-js';
+extend('html', [
     {
         name: 'source.php.embedded',
         matches: {
@@ -413,8 +453,9 @@ Let's say for example you want to highlight PHP's apc functions.
 You can include the php language then in the markup on your page add:
 
 ```html
-<script>
-    Rainbow.extend('php', [
+<script type="module">
+    import {extend} from 'rainbow-js';
+    extend('php', [
         {
             'matches': {
                 1: 'support.function'
@@ -494,86 +535,47 @@ In this example you could avoid subpatterns completely by using a regex like thi
 /(name=)\"(.*?)\"/g
 ```
 
-### Rainbow.addAlias
+### addAlias
 
 The addAlias function allows you to map a different name to a language. For example:
 
 ```javascript
-Rainbow.addAlias('js', 'javascript');
+import {addAlias} from 'rainbow-js';
+addAlias('js', 'javascript');
 ```
 
 This allows you to highlight javascript code by using the language `js` instead of `javascript`.
 
-### Rainbow.onHighlight
+### onHighlight
+
+TODO: does this work?
 
 This method notifies you as soon as a block of code has been highlighted.
 
 ```javascript
-Rainbow.onHighlight(function(block, language) {
+import {addAlias} from 'rainbow-js';
+onHighlight(function(block, language) {
     console.log(block, 'for language', language, 'was highlighted');
 });
 ```
 
 The first parameter returns a reference to that code block in the DOM. The second parameter returns a string of the language being highlighted.
 
-### Rainbow.remove
+### remove
 
 This method allows you to remove syntax rules for a specific language. It is only really useful for development if you want to be able to reload language grammars on the fly without having to refresh the page.
 
 ```javascript
+import {remove} from 'rainbow-js';
 // Remove all the javascript patterns
-Rainbow.remove('javascript');
+remove('javascript');
 ```
 
-## Building
-
-Rainbow is compiled using [rollup](https://github.com/rollup/rollup) and [buble](https://gitlab.com/Rich-Harris/buble).
-
-[Gulp](https://github.com/gulpjs/gulp) is used for all build related tasks.
-
-### Getting a local environment set up
-
-```shell
-git clone git@github.com:ccampbell/rainbow.git
-cd rainbow
-npm install
-```
-
-### Build commands
-
-#### gulp build
-
-The build command is used to build a custom version of rainbow.js. If you run
-
-```shell
-gulp build
-```
-
-A file will be created at `dist/rainbow-custom.min.js` containing rainbow.js as well as popular languages. If you want to specify specific languages you can use:
-
-```shell
-gulp build --languages=html,css,php,javascript
-```
-
-If you want a minimized version of rainbow without any languages you can pass
-
-```shell
-gulp build --languages=none
-```
-
-If you want a minimized version with all languages you can pass
-
-```shell
-gulp build --languages=all
-```
+### Gulp commands
 
 #### gulp lint
 
 The lint command will check all the javascript files for things that do not match the styleguide from the `.eslintrc` file.
-
-#### gulp pack
-
-The pack command will run a buble + rollup build and save the resulting file to `dist/rainbow.js`
 
 #### gulp sass
 

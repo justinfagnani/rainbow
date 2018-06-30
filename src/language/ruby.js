@@ -1,3 +1,5 @@
+import {extend} from '../rainbow.js';
+
 /**
  * Ruby patterns
  *
@@ -6,7 +8,7 @@
  * @author actsasflinn
  */
 
-Rainbow.extend('ruby', [
+extend('ruby', [
     /**
     * __END__ DATA
     */

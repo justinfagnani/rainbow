@@ -1,9 +1,12 @@
+import {addAlias, extend} from '../rainbow.js';
+import './generic.js';
+
 /**
  * Javascript patterns
  *
  * @author Craig Campbell
  */
-Rainbow.extend('javascript', [
+extend('javascript', [
 
     /**
      * matches $. or $(
@@ -152,5 +155,4 @@ Rainbow.extend('javascript', [
     }
 ], 'generic');
 
-Rainbow.addAlias('js', 'javascript');
-
+addAlias('js', 'javascript');
