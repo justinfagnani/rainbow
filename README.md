@@ -9,7 +9,7 @@ Because it uses Worker modules (and doesn't bundle the worker _just yet_), it cu
 
 Go to chrome://flags/#enable-experimental-web-platform-features to set the flag.
 
-Once there's a worker bundle, `rainbow-js` will work in Chrome, Safari, Firefox and Edge uncompiled.
+Once there's a worker bundle, `@justinfagnani/rainbow` will work in Chrome, Safari, Firefox and Edge uncompiled.
 
 ### Usage
 
@@ -18,7 +18,7 @@ Because languages now import the core `rainbow.js` file, you only need to import
 Example:
 
 ```html
-<script type="module" src="/js/rainbow-js/src/language/javascript.js">
+<script type="module" src="/js/@justinfagnani/rainbow/src/language/javascript.js">
 ```
 
 ### Changes
@@ -36,6 +36,7 @@ Example:
   * Imported `utils.js` directly into `worker.js`
   * Create Worker using `import.meta.url`
 * Removed most gulp tasks
+* Removed node.js support (for now)
 * Some updates to README
 
 ### To Do
@@ -43,6 +44,7 @@ Example:
 * Replace `import.meta.url` since it's not supported in Edge?
 * Replace `defer` with a separate module to auto-highlight.
 * Get tests running
+* Remove the global language registry to enable better tree-shaking?
 
 ----
 
@@ -137,20 +139,19 @@ npm install --save @justinfagnani/rainbow
 #### Highlight some code
 
 ```javascript
-import {color} from 'rainbow-js';
-const highlighted = await rainbow.color('// So meta\nrainbow.colorSync(\'var helloWorld = true;\');', 'javascript');
+import {color} from '@justinfagnani/rainbow';
+
+const highlighted = await rainbow.color(`
+    // So meta
+    rainbow.colorSync('var helloWorld = true;');
+  `, 'javascript');
+
 console.log(highlighted);
 ```
 
 ## Supported Browsers
 
-Rainbow 2.0 should work in the following browsers:
-
-| Chrome | Firefox | IE | Safari |
-| ------ | ------- | --- | ------ |
-| 20+ | 13+ | 10+ | 6+ |
-
-For older browsers you can download the legacy [1.2.0](https://github.com/ccampbell/rainbow/archive/1.2.0.zip) release.
+Rainbo-JS uses `import.meta.url`, and worker modules. See support here: https://aremodulesready.com/
 
 ## Supported Languages
 
@@ -235,9 +236,9 @@ Rainbow has four public methods:
 - [onHighlight](#rainbowonhighlight)
 - [remove](#rainbowremove)
 
-### Rainbow.color
+### color
 
-Rainbow.color is used to highlight blocks of code.
+color is used to highlight blocks of code.
 
 For convenience, this method is called automatically to highlight all code blocks on the page when `DOMContentLoaded` fires.  If you would like to highlight stuff that is not in the DOM you can use it on its own.  There are three ways to use it.
 
@@ -269,7 +270,7 @@ For convenience, this method is called automatically to highlight all code block
     });
     ```
 
-3. The final option is passing in your code as a string to `Rainbow.color`.
+3. The final option is passing in your code as a string to `color`.
 
     ```javascript
     const highlightedCode = await color('var foo = true;', 'javascript');
@@ -297,7 +298,7 @@ To apply a global class you can add it in your markup:
 Or you can pass it into a `color` call like this:
 
 ```javascript
-import {extend} from 'rainbow-js';
+import {color} from '@justinfagnani/rainbow';
 color('var hello = true;', {
     language: 'javascript',
     globalClass: 'animate'
@@ -306,12 +307,12 @@ color('var hello = true;', {
 
 ### extend
 
-extend is used to define language grammars which are used to highlight the code you pass in. It can be used to define new languages or to extend existing languages.
+`extend` is used to define language grammars which are used to highlight the code you pass in. It can be used to define new languages or to extend existing languages.
 
 A very simple language grammer looks something like this:
 
 ```javascript
-import {extend} from 'rainbow-js';
+import {extend} from '@justinfagnani/rainbow';
 extend('example', [
     {
         name: 'keyword',
@@ -325,7 +326,7 @@ Any pattern used with extend will take precedence over an existing pattern that 
 For example if you were to call
 
 ```javascript
-import {extend} from 'rainbow-js';
+import {extend} from '@justinfagnani/rainbow';
 extend('example', [
     {
         name: 'keyword.magic',
@@ -343,7 +344,7 @@ By default languages are considered to be standalone, but if you specify an opti
 For example the python language grammars inherit from the generic ones:
 
 ```javascript
-import {extend} from 'rainbow-js';
+import {extend} from '@justinfagnani/rainbow';
 extend('python', [
     {
         name: 'constant.language',
@@ -355,7 +356,7 @@ extend('python', [
 If you wanted to remove the default boolean values you should be able to do something like this:
 
 ```javascript
-import {extend} from 'rainbow-js';
+import {extend} from '@justinfagnani/rainbow';
 extend('python', [
     {
         name: '',
@@ -375,7 +376,7 @@ The `name` value determines what classes will be added to a span that matches th
 The simplest way to define a grammar is to define a regular expression and a name to go along with that.
 
 ```javascript
-import {extend} from 'rainbow-js';
+import {extend} from '@justinfagnani/rainbow';
 extend([
     {
         name: 'constant.boolean',
@@ -389,7 +390,7 @@ extend([
 This allows you to take a more complicated regular expression and map certain parts of it to specific scopes.
 
 ```javascript
-import {extend} from 'rainbow-js';
+import {extend} from '@justinfagnani/rainbow';
 extend([
     {
         matches: {
@@ -406,7 +407,7 @@ extend([
 For more complicated matches you may want to process code within another match group.
 
 ```javascript
-import {extend} from 'rainbow-js';
+import {extend} from '@justinfagnani/rainbow';
 extend([
     {
         matches: [
@@ -429,7 +430,7 @@ extend([
 Sometimes a language supports other languages being embedded inside of it such as JavaScript inside HTML. Rainbow supports that out of the box. Here is an example of how you would highlight PHP tags inside of HTML code.
 
 ```javascript
-import {extend} from 'rainbow-js';
+import {extend} from '@justinfagnani/rainbow';
 extend('html', [
     {
         name: 'source.php.embedded',
@@ -454,7 +455,7 @@ You can include the php language then in the markup on your page add:
 
 ```html
 <script type="module">
-    import {extend} from 'rainbow-js';
+    import {extend} from '@justinfagnani/rainbow';
     extend('php', [
         {
             'matches': {
@@ -540,7 +541,7 @@ In this example you could avoid subpatterns completely by using a regex like thi
 The addAlias function allows you to map a different name to a language. For example:
 
 ```javascript
-import {addAlias} from 'rainbow-js';
+import {addAlias} from '@justinfagnani/rainbow';
 addAlias('js', 'javascript');
 ```
 
@@ -553,7 +554,7 @@ TODO: does this work?
 This method notifies you as soon as a block of code has been highlighted.
 
 ```javascript
-import {addAlias} from 'rainbow-js';
+import {addAlias} from '@justinfagnani/rainbow';
 onHighlight(function(block, language) {
     console.log(block, 'for language', language, 'was highlighted');
 });
@@ -566,7 +567,7 @@ The first parameter returns a reference to that code block in the DOM. The secon
 This method allows you to remove syntax rules for a specific language. It is only really useful for development if you want to be able to reload language grammars on the fly without having to refresh the page.
 
 ```javascript
-import {remove} from 'rainbow-js';
+import {remove} from '@justinfagnani/rainbow';
 // Remove all the javascript patterns
 remove('javascript');
 ```
