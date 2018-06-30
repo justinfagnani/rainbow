@@ -1,6 +1,6 @@
 {
   "name": "@justinfagnani/rainbow",
-  "version": "0.1.0-pre.1",
+  "version": "0.1.0-pre.2",
   "description": "Simple library for code syntax highlighting",
   "main": "./src/rainbow.js",
   "homepage": "http://rainbowco.de",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ccampbell/rainbow.git"
+    "url": "git://github.com/justinfagnani/rainbow.git"
   },
   "keywords": [
     "code",
