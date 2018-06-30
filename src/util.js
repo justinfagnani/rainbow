@@ -141,35 +141,3 @@ export function replaceAtPosition(position, replace, replaceWith, code) {
 
     return code.substr(0, position) + subString.replace(replace, replaceWith);
 }
-
-/**
- * Creates a usable web worker from an anonymous function
- *
- * mostly borrowed from https://github.com/zevero/worker-create
- *
- * @param {Function} fn
- * @param {Prism} Prism
- * @return {Worker}
- */
-export function createWorker(fn, Prism) {
-    if (isNode()) {
-        /* globals global, require, __filename */
-        global.Worker = require('webworker-threads').Worker;
-        return new Worker(__filename);
-    }
-
-    const prismFunction = Prism.toString();
-
-    let code = keys.toString();
-    code += htmlEntities.toString();
-    code += hasCompleteOverlap.toString();
-    code += intersects.toString();
-    code += replaceAtPosition.toString();
-    code += indexOfGroup.toString();
-    code += prismFunction;
-
-    const fullString = `${code}\tthis.onmessage=${fn.toString()}`;
-
-    const blob = new Blob([fullString], { type: 'text/javascript' });
-    return new Worker((window.URL || window.webkitURL).createObjectURL(blob));
-}
