@@ -1,6 +1,6 @@
 {
   "name": "@justinfagnani/rainbow",
-  "version": "0.1.0-pre.4",
+  "version": "0.1.0-pre.5",
   "description": "Simple library for code syntax highlighting",
   "main": "./src/rainbow.js",
   "homepage": "http://rainbowco.de",
@@ -8,6 +8,12 @@
     "test": "npm run build && polymer test --npm -l chrome",
     "build": "rollup src/worker.js -o worker-bundled.js -f iife"
   },
+  "files": [
+    "/src/",
+    "/themes/",
+    "/demos/",
+    "worker-bundled.js"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/justinfagnani/rainbow.git"
