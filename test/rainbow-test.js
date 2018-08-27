@@ -31,81 +31,70 @@ const patternDollar = [{
 // Test suite //
 ////////////////
 
-describe('Rainbow', () => {
-    it('Basic things are defined', () => {
+suite('Rainbow', () => {
+
+    test('Basic things are defined', () => {
+        console.log(typeof Rainbow.color);
         expect(Rainbow).to.exist;
-        expect(Rainbow.color).to.be.a('function');
+        // expect(Rainbow.color).to.be.a('function');
         expect(extend).to.be.a('function');
         expect(Rainbow.onHighlight).to.be.a('function');
         expect(Rainbow.addAlias).to.be.a('function');
     });
 
-    it('Should apply global class', (done) => {
+    test('Should apply global class', async () => {
         extend('generic', [{
             name: 'name',
             pattern: /Craig/gm
         }]);
 
-        Rainbow.color('My name is Craig', { language: 'generic', globalClass: 'global' }, (result) => {
-            expect(result).to.equal('My name is <span class="name global">Craig</span>');
-            done();
-        });
+        const {result} = await Rainbow.color('My name is Craig', { language: 'generic', globalClass: 'global' });
+        expect(result).to.equal('My name is <span class="name global">Craig</span>');
     });
 
-    it('Should properly use patterns', (done) => {
+    test('Should properly use patterns', async () => {
         extend('generic', genericPatterns);
 
-        Rainbow.color('here is a test', 'generic', (result) => {
-            expect(result).to.equal('here is a <span class="test">test</span>');
-            done();
-        });
+        const {result} = await Rainbow.color('here is a test', 'generic');
+        expect(result).to.equal('here is a <span class="test">test</span>');
     });
 
-    it('Should properly extend generic patterns', (done) => {
+    test('Should properly extend generic patterns', async () => {
         extend('newLanguage', patternA, 'generic');
 
-        Rainbow.color('here is a test', 'newLanguage', (result) => {
-            expect(result).to.equal('<span class="a">here</span> is a <span class="test">test</span>');
-            done();
-        });
+        const {result} = await Rainbow.color('here is a test', 'newLanguage');
+        expect(result).to.equal('<span class="a">here</span> is a <span class="test">test</span>');
     });
 
-    it('Should properly extend other patterns that extend generic patterns', (done) => {
+    test('Should properly extend other patterns that extend generic patterns', async () => {
         extend('newLanguage', patternB);
 
-        Rainbow.color('here is a test', 'newLanguage', (result) => {
-            expect(result).to.equal('<span class="a">here</span> <span class="b">is</span> a <span class="test">test</span>');
-            done();
-        });
+        const {result} = await Rainbow.color('here is a test', 'newLanguage')
+        expect(result).to.equal('<span class="a">here</span> <span class="b">is</span> a <span class="test">test</span>');
     });
 
-    it('Should properly apply aliases', (done) => {
+    test('Should properly apply aliases', async () => {
         Rainbow.addAlias('new', 'newLanguage');
 
-        Rainbow.color('here is a test', 'new', (result) => {
-            expect(result).to.equal('<span class="a">here</span> <span class="b">is</span> a <span class="test">test</span>');
-            done();
-        });
+        const {result} = await Rainbow.color('here is a test', 'new');
+        expect(result).to.equal('<span class="a">here</span> <span class="b">is</span> a <span class="test">test</span>');
     });
 
-    it('Should properly remove language', (done) => {
+    test('Should properly remove language', async () => {
         extend('foo', genericPatterns);
 
-        Rainbow.color('just a test', 'foo', (result) => {
-            expect(result).to.equal('just a <span class="test">test</span>');
+        const {result} = await Rainbow.color('just a test', 'foo');
+        expect(result).to.equal('just a <span class="test">test</span>');
 
-            Rainbow.remove('foo');
+        Rainbow.remove('foo');
 
-            Rainbow.color('just a test', 'foo', (result2) => {
-                expect(result2).to.equal('just a test');
-                done();
-            });
-        });
+        const {result: result2} = await Rainbow.color('just a test', 'foo');
+        expect(result2).to.equal('just a test');
     });
 
     // Not sure why anyone would want this behavior, but since we are faking
     // global regex matches we should make sure this works too.
-    it('Should work with non global regex matches', (done) => {
+    test('Should work with non global regex matches', async () => {
         Rainbow.remove('foo');
         extend('foo', [
             {
@@ -114,18 +103,30 @@ describe('Rainbow', () => {
             }
         ]);
 
-        Rainbow.color('123 456 789', 'foo', (result) => {
-            expect(result).to.equal('<span class="number">123</span> 456 789');
-            done();
-        });
+        const {result} = await Rainbow.color('123 456 789', 'foo');
+        expect(result).to.equal('<span class="number">123</span> 456 789');
     });
 
-    it('Should support dollar signs in replacements', (done) => {
+    test('Should support dollar signs in replacements', async () => {
         extend('dollarLanguage', patternDollar);
 
-        Rainbow.color('here is a test with a \'$\' sign in it', 'dollarLanguage', (result) => {
-            expect(result).to.equal('here is a test with a <span class="dollar">\'$\'</span> sign in it');
-            done();
-        });
+        const {result} = await Rainbow.color('here is a test with a \'$\' sign in it', 'dollarLanguage');
+        expect(result).to.equal('here is a test with a <span class="dollar">\'$\'</span> sign in it');
+    });
+
+    test.only('Should color ShadowRoots', async () => {
+        extend('generic', genericPatterns);
+        const container = document.createElement('div');
+        const shadowRoot = container.attachShadow({mode: 'open'});
+        shadowRoot.innerHTML = `
+          <pre>
+            <code data-language="generic">
+                here is a test 
+            </code>
+          </pre>
+        `;
+        await Rainbow.color(shadowRoot);
+        console.log(shadowRoot.innerHTML);
+        expect(shadowRoot.innerHTML).to.equal('here is a <span class="test">test</span>');
     });
 });

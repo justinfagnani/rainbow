@@ -7,3 +7,4 @@ rainbow.sublime-workspace
 .sass-cache
 coverage
 src/build.js
+worker-bundled.js

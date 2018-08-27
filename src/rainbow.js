@@ -53,12 +53,11 @@ let onHighlightCallback;
  */
 let id = 0;
 
-
 let cachedWorker = undefined;
 function _getWorker() {
     if (cachedWorker === undefined) {
-        const url = new URL('worker.js', import.meta.url);
-        cachedWorker = new Worker(url.toString(), {type: 'module'});
+        const url = new URL('../worker-bundled.js', import.meta.url);
+        cachedWorker = new Worker(url.toString());
     }
 
     return cachedWorker;
@@ -98,7 +97,7 @@ function _generateHandler(element) {
         element.classList.remove('loading');
         element.classList.add('rainbow-show');
 
-        if (element.parentNode.tagName === 'PRE') {
+        if (element.parentNode && element.parentNode.tagName === 'PRE') {
             element.parentNode.classList.remove('loading');
             element.parentNode.classList.add('rainbow-show');
         }
@@ -184,7 +183,7 @@ async function _highlightCodeBlocks(codeBlocks) {
 
         // We need to make sure to also add the loading class to the pre tag
         // because that is how we will know to show a preloader
-        if (block.parentNode.tagName === 'PRE') {
+        if (block.parentNode && block.parentNode.tagName === 'PRE') {
             block.parentNode.classList.add('loading');
         }
 
@@ -220,10 +219,10 @@ async function _highlight(node) {
     // when using mootools.
     //
     // @see https://github.com/ccampbell/rainbow/issues/32
-    node = node && typeof node.getElementsByTagName === 'function' ? node : document;
+    // node = node && typeof node.getElementsByTagName === 'function' ? node : document;
 
-    const preBlocks = node.getElementsByTagName('pre');
-    const codeBlocks = node.getElementsByTagName('code');
+    const preBlocks = node.querySelectorAll('pre');
+    const codeBlocks = node.querySelectorAll('code');
     const finalPreBlocks = [];
     const finalCodeBlocks = [];
 
@@ -250,7 +249,7 @@ async function _highlight(node) {
         //
         // If you want to preserve whitespace you can use a pre tag on
         // its own without a code tag inside of it.
-        if (preBlock.getElementsByTagName('code').length) {
+        if (preBlock.querySelectorAll('code').length) {
 
             // This fixes a race condition when Rainbow.color is called before
             // the previous color call has finished.
