@@ -16,7 +16,7 @@ extend('ruby', [
         matches: {
             1: 'variable.language',
             2: {
-              language: null
+            //   language: null
             }
         },
         //find __END__ and consume remaining text

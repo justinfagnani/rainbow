@@ -1,4 +1,4 @@
-import '../../src/language/ruby';
+import '../../lib/language/ruby';
 import { run } from '../helper';
 
 ////////////////

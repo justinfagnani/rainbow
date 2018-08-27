@@ -1,9 +1,5 @@
-*.pyc
-*.sw?
-dist/rainbow-custom.min.js
-.AppleDouble
-node_modules
-rainbow.sublime-workspace
+/node_modules/
+/lib/
 .sass-cache
 coverage
 src/build.js

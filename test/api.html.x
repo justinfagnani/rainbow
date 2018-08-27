@@ -10,9 +10,9 @@
     </div>
 
     <script src="../dist/rainbow.js"></script>
-    <script src="../src/language/generic.js"></script>
-    <script src="../src/language/javascript.js"></script>
-    <script src="../src/language/html.js"></script>
+    <script src="../lib/language/generic.js"></script>
+    <script src="../lib/language/javascript.js"></script>
+    <script src="../lib/language/html.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script>
         setTimeout(function() {

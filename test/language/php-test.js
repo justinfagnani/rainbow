@@ -1,5 +1,5 @@
-import '../../src/language/generic';
-import '../../src/language/php';
+import '../../lib/language/generic';
+import '../../lib/language/php';
 import { run, skip } from '../helper';
 
 ////////////////

@@ -1,8 +1,8 @@
-import '../../src/language/generic';
-import '../../src/language/javascript';
-import '../../src/language/php';
-import '../../src/language/css';
-import '../../src/language/html';
+import '../../lib/language/generic';
+import '../../lib/language/javascript';
+import '../../lib/language/php';
+import '../../lib/language/css';
+import '../../lib/language/html';
 import { run } from '../helper';
 
 ////////////////
@@ -10,7 +10,7 @@ import { run } from '../helper';
 ////////////////
 const language = 'html';
 
-describe(language, () => {
+suite(language, () => {
     run(
         language,
 

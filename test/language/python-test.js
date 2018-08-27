@@ -1,5 +1,5 @@
-import '../../src/language/generic';
-import '../../src/language/python';
+import '../../lib/language/generic';
+import '../../lib/language/python';
 import { run } from '../helper';
 
 ////////////////

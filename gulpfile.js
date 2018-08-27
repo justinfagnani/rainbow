@@ -39,7 +39,8 @@ gulp.task('test', function(done) {
 });
 
 gulp.task('lint', function() {
-    return gulp.src('src/*.js')
+    // TODO(justinfagnani): lint the .ts files
+    return gulp.src('lib/*.js')
         .pipe(eslint())
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());

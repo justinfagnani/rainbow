@@ -1,5 +1,5 @@
-import '../../src/language/generic';
-import '../../src/language/coffeescript';
+import '../../lib/language/generic';
+import '../../lib/language/coffeescript';
 import { run } from '../helper';
 
 ////////////////

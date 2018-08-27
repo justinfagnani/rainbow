@@ -1,4 +1,4 @@
-import '../../src/language/java';
+import '../../lib/language/java';
 import { run } from '../helper';
 
 ////////////////

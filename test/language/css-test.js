@@ -1,4 +1,4 @@
-import '../../src/language/css';
+import '../../lib/language/css';
 import { run } from '../helper';
 
 ////////////////
@@ -6,7 +6,7 @@ import { run } from '../helper';
 ////////////////
 const language = 'css';
 
-describe(language, () => {
+suite(language, () => {
     run(
         language,
 

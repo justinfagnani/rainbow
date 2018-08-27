@@ -1,4 +1,4 @@
-import '../../src/language/sql';
+import '../../lib/language/sql';
 import { run } from '../helper';
 
 ////////////////

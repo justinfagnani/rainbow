@@ -1,3 +1,5 @@
+import {extend} from '../rainbow.js';
+
 /**
 * Java patterns
 *

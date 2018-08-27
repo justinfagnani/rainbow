@@ -1,5 +1,5 @@
-import '../../src/language/generic';
-import '../../src/language/r';
+import '../../lib/language/generic';
+import '../../lib/language/r';
 import { run, skip } from '../helper';
 
 ////////////////

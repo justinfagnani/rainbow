@@ -1,4 +1,4 @@
-import '../../src/language/json';
+import '../../lib/language/json';
 import { run } from '../helper';
 
 ////////////////

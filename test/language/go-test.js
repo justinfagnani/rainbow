@@ -1,5 +1,5 @@
-import '../../src/language/generic';
-import '../../src/language/go';
+import '../../lib/language/generic';
+import '../../lib/language/go';
 import { run, skip } from '../helper';
 
 ////////////////

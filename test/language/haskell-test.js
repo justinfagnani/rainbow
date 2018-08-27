@@ -1,5 +1,5 @@
-import '../../src/language/generic';
-import '../../src/language/haskell';
+import '../../lib/language/generic';
+import '../../lib/language/haskell';
 import { run } from '../helper';
 
 ////////////////

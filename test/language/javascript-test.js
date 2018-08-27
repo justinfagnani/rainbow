@@ -1,5 +1,5 @@
-import '../../src/language/generic';
-import '../../src/language/javascript';
+import '../../lib/language/generic';
+import '../../lib/language/javascript';
 import { run } from '../helper';
 
 ////////////////
@@ -7,7 +7,7 @@ import { run } from '../helper';
 ////////////////
 const language = 'javascript';
 
-describe(language, () => {
+suite(language, () => {
     run(
         language,
 

@@ -1,25 +1,21 @@
 
-/////////////////////////
-// Helpers and globals //
-/////////////////////////
+import * as Rainbow from '../lib/rainbow.js';
 
 const expect = chai.expect;
 
-export function run(lang, description, code, result, only = false) {
-    let toCall = it;
+export function run(lang, description, code, expected, only = false) {
+    let toCall = test;
     if (only) {
-        toCall = it.only;
+        toCall = test.only;
     }
 
-    toCall(description, (done) => {
-        Rainbow.color(code, lang, (html) => {
-            expect(result).to.equal(html);
-            done();
-        });
+    toCall(description, async () => {
+        const {result} = await Rainbow.color(code, lang);
+        expect(result).to.equal(expected);
     });
 }
 
 export function skip(lang, description, code, result) {
-    it.skip(description);
+    test.skip(description);
 }
 

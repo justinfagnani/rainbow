@@ -1,4 +1,4 @@
-import '../../src/language/d';
+import '../../lib/language/d';
 import { run } from '../helper';
 
 ////////////////

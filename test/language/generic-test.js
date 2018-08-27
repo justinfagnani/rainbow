@@ -1,11 +1,9 @@
-import { run, skip } from '../helper';
+import { run, skip } from '../helper.js';
+import '../../lib/language/generic.js';
 
-////////////////
-// Test suite //
-////////////////
 const language = 'generic';
 
-describe(language, () => {
+suite(language, () => {
     run(
         language,
 

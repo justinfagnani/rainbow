@@ -1,4 +1,4 @@
-import '../../src/language/smalltalk';
+import '../../lib/language/smalltalk';
 import { run } from '../helper';
 
 ////////////////

@@ -1,4 +1,4 @@
-import '../../src/language/csharp';
+import '../../lib/language/csharp';
 import { run } from '../helper';
 
 ////////////////
