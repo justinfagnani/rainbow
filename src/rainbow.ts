@@ -247,7 +247,7 @@ async function _highlight(node?: Element|Document) {
       // the previous color call has finished.
       if (!preBlock.getAttribute('data-trimmed')) {
         preBlock.setAttribute('data-trimmed', 'true');
-        preBlock.innerHTML = preBlock.innerHTML.trim();
+        // preBlock.innerHTML = preBlock.innerHTML.trim();
       }
       continue;
     }
