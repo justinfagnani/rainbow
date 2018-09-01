@@ -102,7 +102,7 @@ extend('html', [
             2: 'support.tag.special',
             3: 'support.tag-name'
         },
-        pattern: /(&lt;\??)(\/|\!?)(\w+)/g
+        pattern: /(&lt;\??)(\/|\!?)([\w\-]+)/g
     },
     {
         matches: {
