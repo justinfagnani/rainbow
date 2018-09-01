@@ -57,7 +57,7 @@ extend('css', [
                 },
                 {
                     name: 'entity.name.tag',
-                    pattern: /\w+/g
+                    pattern: /[\w\-]+/g
                 }
             ]
         },
