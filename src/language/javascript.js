@@ -143,7 +143,7 @@ extend('javascript', [
             3: 'storage.modifier.extends',
             4: 'entity.other.inherited-class'
         },
-        pattern: /(class)\s+(\w+)(?:\s+(extends)\s+(\w+))?(?=\s*\{)/g
+        pattern: /(class)\s+(\w+)(?:\s+(extends)\s+([\w\.\(\)]+))?(?=\s*\{)/g
     },
     {
         name: 'storage.type.function.arrow',
