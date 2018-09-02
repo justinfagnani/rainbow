@@ -14,12 +14,18 @@ export class RainbowCode extends LitElement {
     let colorPromise = undefined;
     if (this.textContent !== null && this.language !== undefined) {
       colorPromise = (async () => {
-        const tmp = document.createElement('template');
+
         const {result} =
             await color(this.textContent!, this.language || 'generic');
+
+        // Use a <template> to parse the result HTML
+        const tmp = document.createElement('template');
         tmp.innerHTML = result;
         const node = document.importNode(tmp.content, true);
+
+        // Hide light dom text
         this.setAttribute('highlighted', '');
+        
         return node;
       })();
     }
