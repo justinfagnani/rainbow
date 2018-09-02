@@ -19,29 +19,44 @@ export class RainbowCode extends LitElement {
             await color(this.textContent!, this.language || 'generic');
         tmp.innerHTML = result;
         const node = document.importNode(tmp.content, true);
+        this.setAttribute('highlighted', '');
         return node;
       })();
     }
 
-    return html`<slot></slot>
-      <style>
+    // Use comments to avoid whitespace becuase of `white-space: pre`, which
+    // applies to both light and shadow dom.
+    return html`<!--
+    --><style>
         :host {
           display: block;
           position: relative;
+          /* Create a stacking context, so we can push light dom to the top */
+          z-index: 1;
+        }
+        /* Once the code is highlighted, hide the original source, but leave it
+           laid out so that outlines will be in the right place. */
+        :host([highlighted]) {
+          color: transparent;
         }
         code {
           position: absolute;
+          font-family: inherit;
+          /* rainbow-code and code's padding need to match to align text */
+          padding: var(--padding);
+          margin: 0;
           top: 0;
           left: 0;
           width: 100%;
           height: 100%;
           white-space: pre;
-          margin: 0;
+          color: var(--color, white);
+          /* So that light dom content is above and can hide code */
+          z-index: -1;
         }
-      </style>
-      <link rel="stylesheet" href="${this.theme}">
-      <code>${colorPromise}</code>
-    `;
+      </style><!--
+      --><link rel="stylesheet" href="${this.theme}"><!--
+      --><code>${colorPromise}</code><slot></slot>`;
   }
 
   connectedCallback() {
