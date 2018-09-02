@@ -23,21 +23,31 @@ export class RainbowCode extends LitElement {
       })();
     }
 
-    return html`
+    return html`<slot></slot>
       <style>
+        :host {
+          display: block;
+          position: relative;
+        }
         code {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
           white-space: pre;
+          margin: 0;
         }
       </style>
       <link rel="stylesheet" href="${this.theme}">
-      <pre>${colorPromise}</pre>
+      <code>${colorPromise}</code>
     `;
   }
 
   connectedCallback() {
     super.connectedCallback();
     this._mutationObserver =
-        new MutationObserver((records) => { this.invalidate(); });
+        new MutationObserver((records) => { this.requestUpdate(); });
     this._mutationObserver.observe(this, {
       childList : true,
       characterData : true,

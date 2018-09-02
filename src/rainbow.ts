@@ -183,7 +183,7 @@ async function _highlightCodeBlocks(codeBlocks: Element[]) {
     const globalClass = block.getAttribute('data-global-class');
     const delay = parseInt(block.getAttribute('data-delay')!, 10);
 
-    promises.push(_messageWorker(_getWorkerData(block.innerHTML,
+    promises.push(_messageWorker(_getWorkerData(block.textContent || '',
                                                 {language, globalClass, delay}))
                       .then(_generateHandler(block)));
   }
