@@ -1,0 +1,92 @@
+/**
+ * Monokai, but stripped down for use in a ShadowRoot.
+ *
+ * Font styles were removed to inherit from the containing <rainbow-code>, and
+ * italics were removed to keep the text perfectly matched up with the original
+ * source in the light dom.
+ */
+.comment {
+  color: #75715E
+}
+
+.constant {
+  color: #AE81FF
+}
+
+.storage {
+  color: #66D9EF;
+  /* font-style: italic */
+}
+
+.string,
+.comment.docstring {
+  color: #E6DB74
+}
+
+.support.tag {
+  color: #fff
+}
+
+.keyword {
+  color: #F92672
+}
+
+.selector,
+.storage.modifier.extends {
+  color: #F92672
+}
+
+/* .inherited-class {
+  font-style: italic
+} */
+
+.operator,
+.support.tag-name,
+.entity.tag {
+  color: #F92672
+}
+
+.entity,
+.support.attribute,
+.entity.attribute {
+  color: #A6E22E
+}
+
+.entity.name.type,
+.entity.name.struct {
+  color: #fff
+}
+
+.support,
+*[data-language="c"] .function.call {
+  color: #66D9EF
+}
+
+/* .css-property,
+.storage.function {
+  font-style: italic
+} */
+
+.variable.global,
+.variable.class,
+.variable.instance {
+  color: #A6E22E
+}
+
+.support.operator,
+.lang-html .support.operator,
+.language-html .support.operator {
+  color: #fff
+}
+
+.variable.super,
+.lang-javascript .variable.super,
+.language-javascript .variable.super {
+  color: #66D9EF
+}
+
+.variable.super,
+.lang-js .variable.super,
+.language-js .variable.super {
+  color: #66D9EF
+}
