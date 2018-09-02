@@ -7,7 +7,17 @@ import './generic.js';
  * @author Craig Campbell
  */
 extend('javascript', [
-
+    {
+        name: 'source.html.embedded',
+        matches: {
+            1: 'function.call',
+            2: {
+                language: 'html'
+            },
+            3: 'function.call',
+        },
+        pattern: /(html`)([\s\S]*?)(`)/gm
+    },
     /**
      * matches $. or $(
      */
