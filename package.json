@@ -45,6 +45,7 @@
     "run-sequence": "1.2.1",
     "semver": "5.1.0",
     "through": "2.3.8",
+    "typescript": "3.0.3",
     "wct-browser-legacy": "1.0.1",
     "yargs": "4.7.1"
   },
