@@ -1,11 +1,17 @@
 <!doctype html>
 <html>
   <head>
-    <script src="../node_modules/wct-browser-legacy/browser.js"></script>
-    <script type="module" src="./rainbow-test.js"></script>
+    <script src="../node_modules/mocha/mocha.js"></script> 
+    <script src="../node_modules/chai/chai.js"></script> 
+    <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
     <script type="module" src="./language/generic-test.js"></script>
     <script type="module" src="./language/html-test.js"></script>
     <script type="module" src="./language/javascript-test.js"></script>
     <script type="module" src="./language/css-test.js"></script>
+    <script>
+      WCT.loadSuites([
+        'rainbow-test.html',
+      ]);
+    </script>
   </head>
 </html>
