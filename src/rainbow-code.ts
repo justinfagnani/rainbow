@@ -39,6 +39,7 @@ export class RainbowCode extends LitElement {
           position: relative;
           /* Create a stacking context, so we can push light dom to the top */
           z-index: 1;
+          padding: var(--code-padding);
         }
         /* Once the code is highlighted, hide the original source, but leave it
            laid out so that outlines will be in the right place. */
@@ -49,16 +50,17 @@ export class RainbowCode extends LitElement {
           position: absolute;
           font-family: inherit;
           /* rainbow-code and code's padding need to match to align text */
-          padding: var(--padding);
+          padding: var(--code-padding, inherit);
           margin: 0;
           top: 0;
           left: 0;
           width: 100%;
           height: 100%;
           white-space: pre;
-          color: var(--color, white);
+          color: var(--code-color, white);
           /* So that light dom content is above and can hide code */
           z-index: -1;
+          box-sizing: border-box;
         }
       </style><!--
       --><link rel="stylesheet" href="${this.theme}"><!--
