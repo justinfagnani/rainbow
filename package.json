@@ -30,25 +30,17 @@
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "chai": "3.5.0",
-    "del": "2.2.0",
-    "gulp": "3.9.1",
-    "gulp-autoprefixer": "3.1.0",
-    "gulp-bump": "2.1.0",
-    "gulp-eslint": "2.0.0",
-    "gulp-git": "2.6.0",
-    "gulp-inject-string": "1.1.0",
-    "gulp-sass": "2.3.2",
-    "mocha": "2.5.3",
-    "polymer-cli": "1.8.0",
-    "rollup": "0.65.0",
-    "run-sequence": "1.2.1",
-    "semver": "5.1.0",
-    "through": "2.3.8",
-    "wct-browser-legacy": "1.0.1",
-    "yargs": "4.7.1"
+    "@types/chai": "4.1.7",
+    "@types/mocha": "5.2.7",
+    "chai": "4.2.0",
+    "mocha": "6.1.4",
+    "polymer-cli": "^1.9.0",
+    "rollup": "1.16.2",
+    "typescript": "3.5.2",
+    "wct-mocha": "1.0.1"
   },
   "dependencies": {
-    "@polymer/lit-element": "0.6.0-dev.6"
+    "lit-element": "^2.0.0",
+    "lit-html": "^1.0.0"
   }
 }

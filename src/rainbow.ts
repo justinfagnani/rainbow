@@ -335,7 +335,7 @@ export async function color(...args: any[]): Promise<ColorResult|void> {
   }
 
   if (args.length === 0) {
-    const result = await _highlight();
+    await _highlight();
     return;
   }
 
